@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+       
+      #grid-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 30%;
+      }
+
+      .grid-square {
+        box-sizing: border-box;
+        border: 1px solid black;
+      }
+
+      #reset-button {
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #ccc;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+      footer{
+        text-align: center;
+        padding: 20px;
+        
+      }
+      footer a{
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <center>
+    <h1>Sketch Pad</h1>
+    <button id="reset-button">Reset Grid</button>
+    <div id="grid-container"></div>
+    <!-- <button type="reset">Clear</button> -->
+    <footer>
+        <a href="https://github.com/pacifiqueCYUBAHIRO/Etch-a-Sketch" style="text-decoration: none; color:black;">&copy; Designed by PacifiqueCYUBAHIRO</a>
+    </footer>
+</center>
+    <script>
+      const gridContainer = document.getElementById('grid-container');
+      const resetButton = document.getElementById('reset-button');
+
+      function createGridSquares(numSquares) {
+        gridContainer.innerHTML = '';
+        const squareSize = 400 / numSquares;
+
+
+        for (let i = 0; i < numSquares * numSquares; i++) {
+          const square = document.createElement('div');
+          square.classList.add('grid-square');
+          square.style.width = `${squareSize}px`;
+          square.style.height = `${squareSize}px`; 
+          square.style.backgroundColor = 'rgb(255, 255, 255)';
+          square.addEventListener('mouseover', changeColor);
+          gridContainer.appendChild(square);
+        }
+      }
+
+      function changeColor(event) {
+        const square = event.target;
+        const currentColor = square.style.backgroundColor;
+
+        if (currentColor === 'rgb(0, 0, 0)') {
+          return;
+        }
+
+        const newRed = Math.floor(Math.random() * 256);
+        const newGreen = Math.floor(Math.random() * 256);
+        const newBlue = Math.floor(Math.random() * 256);
+        const newColor = `rgb(${newRed}, ${newGreen}, ${newBlue})`;
+
+        if (currentColor !== 'rgb(255, 255, 255)') {
+          const [r, g, b] = parseRGB(currentColor);
+          const darkenedColor = darkenColor(r, g, b);
+          square.style.backgroundColor = darkenedColor;
+
+          if (darkenedColor === 'rgb(0, 0, 0)') {
+            square.removeEventListener('mouseover', changeColor);
+          }
+        } 
+        else {
+          square.style.backgroundColor = newColor;
+        }
+      }
+
+      function parseRGB(colorString) {
+        const [r, g, b] = colorString.match(/\d+/g).map(Number);
+        return [r, g, b];
+      }
+
+      function darkenColor(red, green, blue) {
+        const newRed = Math.floor(red * 0.9);
+        const newGreen = Math.floor(green * 0.9);
+        const newBlue = Math.floor(blue * 0.9);
+        return `rgb(${newRed}, ${newGreen}, ${newBlue})`;
+      }
+
+      function resetGrid() {
+        let numSquares = prompt('Enter the number of squares per side (maximum 100):');
+        numSquares = Math.min(100, parseInt(numSquares)) || 16;
+        createGridSquares(numSquares);
+      }
+
+      resetButton.addEventListener('click', resetGrid);
+
+      createGridSquares(16);
+    </script>
+  </body>
+</html>
